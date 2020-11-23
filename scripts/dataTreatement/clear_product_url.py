@@ -5,8 +5,7 @@ pathCsv = 'data/'
 
 def remove_product(line):
     new_line = line
-    new_line['product_url'] = re.sub(r'^Product_List\/setTab\/',"",line['product_url']) 
-    new_line['product_url'] = re.sub(r'\/desc$',"",new_line['product_url']) 
+    new_line['product_url']= re.sub(r'^product\/',"",line['product_url'])
     return new_line
 
 def clear_file(file, new_file):
@@ -21,8 +20,10 @@ def clear_file(file, new_file):
                 writer.writerow(remove_product(line))
 
 def main():
-    file = pathCsv+'ad_duplicates_drop.csv'
-    new_file = pathCsv+'res_'+'ad_duplicates_drop.csv'
-    clear_file(file,new_file)
+    file = 'list_duplicates_drop.csv'
+    pathFile = pathCsv + file
+    newFile = 'res_' + file
+    pathRes = pathCsv + newFile
+    clear_file(pathFile, pathRes)
 
 main()
