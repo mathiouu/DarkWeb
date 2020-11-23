@@ -6,8 +6,8 @@ pathCsv = 'data/'
 
 def remove_product(line):
     new_line = line
-    new_line['product_url'] = re.sub(r'^Product_List\/setTab\/',"",line['product_url']) 
-    new_line['product_url'] = re.sub(r'\/desc$',"",new_line['product_url']) 
+    match = re.match(r'(^Product_List\/setTab\/)+(.+)+(\/desc$)',line['product_url'])
+    new_line['product_url'] = match.group(2)
     return new_line
 
 
@@ -22,7 +22,7 @@ def clear_file(file, new_file):
             writer.writeheader()
             for line in reader:
                 writer.writerow(remove_product(line))
-
+            
 
 
 
