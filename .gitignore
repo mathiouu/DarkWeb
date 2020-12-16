@@ -1,4 +1,4 @@
 data/*.csv
 venv
 .vscode
-*/__pycache__
+*/*/__pycache__
