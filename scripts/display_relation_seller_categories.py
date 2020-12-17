@@ -5,7 +5,8 @@ import csv
 def main(g):
     category = graph['category']
     viewLabel = graph['viewLabel']
-    full_info_vendors_path = 'C:\\Users\\sebas\\cours\\Master2\\Analyse-Reseau\\projetDarkWeb\\DarkWeb\\data\\full_info_vendors.csv'
+    full_info_vendors_path = 'data/full_info_vendors.csv'
+    # full_info_vendors_path = 'C:\\Users\\sebas\\cours\\Master2\\Analyse-Reseau\\projetDarkWeb\\DarkWeb\\data\\full_info_vendors.csv'
     # datasPath = "C:/Users/sebas/cours/Master2/Analyse-Reseau/projetDarkWeb/DarkWeb/data"
     viewMetric = graph['viewMetric']
     viewIcon = graph['viewIcon']

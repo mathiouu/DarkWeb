@@ -1,6 +1,7 @@
 venv
-data/dataSet/*.csv
+# data/dataSet/*.csv
 .vscode
 */*/__pycache__
 scripts/__pycache__
 linuxvenv
+data/*

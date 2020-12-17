@@ -3,11 +3,11 @@ import numpy as np
 import re
 import sys
 
-path_to_datas = "C:/Users/sebas/cours/Master2/Analyse-Reseau/projetDarkWeb/DarkWeb/data"
-
+# path_to_datas = "C:/Users/sebas/cours/Master2/Analyse-Reseau/projetDarkWeb/DarkWeb/data"
+path_to_datas = "data/"
 
 product_list = pd.read_csv(
-    path_to_datas+'/list_duplicates_drop.csv', delimiter=";")
+    path_to_datas+'dataSet/list_duplicates_drop.csv', delimiter=";")
 
 
 def clean_sub_cat_column(text):
@@ -36,9 +36,9 @@ def get_totals_by_categories(clean_product_list):
     total_sells_by_categories = top_categories[['product_category', 'USD']].groupby(
         by="product_category").count().reset_index()
     total_sells_by_categories.to_csv(
-        path_to_datas+'/total_sells_by_categories.csv', index=False)
+        path_to_datas+'/totalCategories/total_sells_by_categories.csv', index=False)
     total_usd_by_categories.to_csv(
-        path_to_datas+'/total_usd_by_categories.csv', index=False)
+        path_to_datas+'/totalCategories/total_usd_by_categories.csv', index=False)
     return (total_usd_by_categories, total_sells_by_categories)
 
 
@@ -61,9 +61,9 @@ def get_totals_by_subcategories(clean_product_list):
         by="product_category", ascending=True, inplace=False)
 
     total_sells_by_sub_categories.to_csv(
-        path_to_datas+'/total_sells_by_sub_categories.csv', index=False)
+        path_to_datas+'/totalSubCategories/total_sells_by_sub_categories.csv', index=False)
     total_usd_by_sub_categories.to_csv(
-        path_to_datas+'/total_usd_by_sub_categories.csv', index=False)
+        path_to_datas+'/totalSubCategories/total_usd_by_sub_categories.csv', index=False)
 
     return (total_usd_by_sub_categories, total_sells_by_sub_categories)
 
@@ -74,7 +74,7 @@ def get_trending_product(dataframe, category):
     cat = dataframe.groupby(by="product_category")
     index = cat.get_group(category)['USD'].idxmax(axis="columns")
     trending_product = dataframe.loc[index]
-    print(trending_product)
+    # print(trending_product)
     return trending_product
 
 
@@ -101,7 +101,7 @@ def main(sells=True, category=""):
 
 if __name__ == '__main__':
     if len(sys.argv) > 3:
-        raise ValueError('Mauvais arguements')
+        raise ValueError('Wrong arguments')
 
     if len(sys.argv) == 1:
         main()

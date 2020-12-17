@@ -1,2 +1,2 @@
-python3 scripts/dataTreatement/displayTotalByCategories.py;
-python3 scripts/dataTreatement/displayTotalBySubCategories.py;
+python3 scripts/dataTreatement/display_total_by_categories.py;
+python3 scripts/dataTreatement/display_total_by_sub_categories.py;sh
