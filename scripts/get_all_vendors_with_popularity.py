@@ -11,6 +11,7 @@ list_duplicates = pd.read_csv(
 
 seller_duplicates = pd.read_csv(
     path_to_datas+'/seller_duplicates_drop.csv', delimiter=";")
+sellers = pd.read_csv(path_to_datas+'/sellers.csv')
 
 
 def clean_sales_column(text):
@@ -38,6 +39,70 @@ def clean_cat_column(text):
 
 def clean_usd_column(text):
     return text.replace(',', '')
+
+
+def set_new_popularity(row, sales, trust, total):
+    current_vendor = row.vendor
+    sales_index = sales.index.get_loc(
+        sales[sales.vendor == current_vendor].iloc[0].name)
+    trust_index = trust.index.get_loc(
+        trust[trust.vendor == current_vendor].iloc[0].name)
+    total_index = total.index.get_loc(
+        total[total.vendor == current_vendor].iloc[0].name)
+    return sales_index + trust_index + total_index
+
+
+def set_sales(row, sales):
+    current_vendor = row.vendor
+    result = sales[sales.vendor == current_vendor]
+    sales_index = sales.index.get_loc(result.iloc[0].name)
+    return sales_index
+
+
+def set_trust(row, trust):
+    current_vendor = row.vendor
+    result = trust[trust.vendor == current_vendor]
+    trust_index = trust.index.get_loc(result.iloc[0].name)
+    return trust_index
+
+
+def set_total(row, total):
+    current_vendor = row.vendor
+    result = total[total.vendor == current_vendor]
+    total_index = total.index.get_loc(result.iloc[0].name)
+    return total_index
+
+
+def set_famous_sellers(dataframe):
+    print(dataframe.head())
+    sales = dataframe.sort_values(
+        by="sales", axis=0, ascending=False).reset_index()
+    trust = sellers.sort_values(
+        by="trust", axis=0, ascending=False).reset_index()
+    total = sellers.sort_values(
+        by="total", axis=0, ascending=False).reset_index()
+
+    dataframe['sales_pos'] = dataframe.apply(
+        lambda row: set_sales(row, sales), axis=1)
+    dataframe['trust_pos'] = dataframe.apply(
+        lambda row: set_trust(row, trust), axis=1)
+    dataframe['total_pos'] = dataframe.apply(
+        lambda row: set_total(row, total), axis=1)
+    dataframe['popularity'] = dataframe.apply(
+        lambda row: set_new_popularity(row, sales, trust, total), axis=1)
+    new_list = dataframe.sort_values(by="popularity", ascending=True)
+    print(new_list.keys())
+    return new_list
+
+    # def setPopularity(row):
+    #     return 0.9*float(row['sales'])+30000000*float(row['trust'])+0.2*float(row['total'])
+    # sellers['popularity'] = sellers.apply(
+    #     lambda row: setPopularity(row), axis=1)
+
+    # newSellers = sellers.nlargest(258, 'popularity')
+    # print(newSellers.sort_values(by='popularity', ascending=False))
+
+    # newSellers.to_csv(r'../data/famousSellers.csv', index=False)
 
 
 def get_cat_subcat_vendors():
@@ -103,7 +168,7 @@ def main():
     full_info_vendors.columns = ['vendor', 'product_category',
                                  'product_sub_category', 'vendors', 'total_usd', 'sales', 'lvl', 'trust', 'member_since']
     full_info_vendors = full_info_vendors.dropna()
-    full_info_vendors = compute_popularity(
+    full_info_vendors = set_famous_sellers(
         full_info_vendors.drop(columns=['vendors'], axis=1))
 
     full_info_vendors.to_csv(path_to_datas+'/full_info_vendors.csv')

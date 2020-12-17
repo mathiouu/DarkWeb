@@ -40,7 +40,8 @@ def main(g):
                 viewIcon[node_vendor] = "md-human"
                 viewLabel[node_vendor] = vendor
                 nodes[vendor] = node_vendor
-                popularity[node_vendor] = row['popularity'] == "True"
+                
+                popularity[node_vendor] = int(row['popularity']) < 2000
 
             e = g.existEdge(node_product_subcategory, node_vendor, True)
             if e.isValid():
