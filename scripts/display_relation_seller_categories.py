@@ -6,8 +6,7 @@ def main(g):
     category = graph['category']
     viewLabel = graph['viewLabel']
     full_info_vendors_path = 'data/full_info_vendors.csv'
-    # full_info_vendors_path = 'C:\\Users\\sebas\\cours\\Master2\\Analyse-Reseau\\projetDarkWeb\\DarkWeb\\data\\full_info_vendors.csv'
-    # datasPath = "C:/Users/sebas/cours/Master2/Analyse-Reseau/projetDarkWeb/DarkWeb/data"
+
     viewMetric = graph['viewMetric']
     viewIcon = graph['viewIcon']
     viewColor = graph['viewColor']
@@ -41,7 +40,7 @@ def main(g):
                 viewIcon[node_vendor] = "md-human"
                 viewLabel[node_vendor] = vendor
                 nodes[vendor] = node_vendor
-                
+
                 popularity[node_vendor] = int(row['popularity']) < 2000
 
             e = g.existEdge(node_product_subcategory, node_vendor, True)

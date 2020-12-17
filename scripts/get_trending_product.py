@@ -1,8 +1,9 @@
 import pandas as pd
 import re
 import sys
+import cleaner_utility
+import os
 
-# path_to_datas = "C:/Users/sebas/cours/Master2/Analyse-Reseau/projetDarkWeb/DarkWeb/data"
 path_to_datas = 'data/'
 path_to_dataSet = path_to_datas + 'dataSet/'
 
@@ -12,24 +13,18 @@ path_list_duplicates_drop = path_to_dataSet + list_duplicates_drop
 
 product_list = pd.read_csv(path_list_duplicates_drop, delimiter=";")
 
-def clean_sub_cat_column(text):
-    clean = str(text).replace(' ', '')
-    regex = '(Item#.\\d+-)(.+)(-.*)'
-    regex1 = '(.*)\\/(.*)'
-    clean = re.match(regex, str(clean))
-    clean = re.match(regex1, clean.groups()[1])
-    res = clean.groups()[0]
-    return res
 
-def clean_category_column(text):
-    clean = text.strip()
-    regex = '(\\W*)(.+)(\\s*)'
-    clean = re.match(regex, str(clean))
-    res = clean.groups()[1]
-    return res
+total_sub_category_directory = 'data/totalSubCategories/'
+total_category_directory = 'data/totalCategories/'
 
-def clean_usd_column(text):
-    return str(text).replace(',', '')
+
+def createDirectory(dirName):
+    try:
+        os.mkdir(dirName)
+        print("Directory ", dirName,  " Created ")
+    except FileExistsError:
+        print("Directory ", dirName,  " already exists")
+
 
 def get_totals_by_categories(clean_product_list):
 
@@ -52,7 +47,7 @@ def get_totals_by_subcategories(clean_product_list):
     all_sub_categories = clean_product_list.dropna()
 
     all_sub_categories['product_id_subcategory'] = all_sub_categories['product_id_subcategory'].apply(
-        clean_sub_cat_column)
+        cleaner_utility.clean_sub_cat_column)
 
     total_usd_by_sub_categories = all_sub_categories.groupby(
         by=['product_category', 'product_id_subcategory']).agg({'USD': 'sum'}).reset_index()
@@ -78,17 +73,20 @@ def get_trending_product(dataframe, category):
     cat = dataframe.groupby(by="product_category")
     index = cat.get_group(category)['USD'].idxmax(axis="columns")
     trending_product = dataframe.loc[index]
+    print(trending_product)
     return trending_product
 
 
 def main(sells=True, category=""):
+    createDirectory(total_sub_category_directory)
+    createDirectory(total_category_directory)
     column_to_drop = ['product_url', 'product_views_sales_quantityleft',
                       'vendor', 'vendor_url', 'BTC', 'file', 'crawling_date']
     clean_product_list = product_list.drop(columns=column_to_drop, axis=1)
     clean_product_list['product_category'] = clean_product_list['product_category'].apply(
-        clean_category_column)
+        cleaner_utility.clean_category_column)
     clean_product_list['USD'] = clean_product_list['USD'].apply(
-        clean_usd_column)
+        cleaner_utility.clean_usd_column)
     clean_product_list['USD'] = clean_product_list['USD'].astype(float)
 
     (total_usd_by_category, total_sells_by_category) = get_totals_by_categories(

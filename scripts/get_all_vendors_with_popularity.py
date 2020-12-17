@@ -1,7 +1,7 @@
 import pandas as pd
 import re
+import cleaner_utility
 
-# path_to_datas = "C:/Users/sebas/cours/Master2/Analyse-Reseau/projetDarkWeb/DarkWeb/data"
 path_to_datas = "data/"
 
 list_duplicates = pd.read_csv(
@@ -10,33 +10,6 @@ list_duplicates = pd.read_csv(
 seller_duplicates = pd.read_csv(
     path_to_datas+'dataSet/seller_duplicates_drop.csv', delimiter=";")
 sellers = pd.read_csv(path_to_datas+'/sellers.csv')
-
-
-def clean_sales_column(text):
-    clean = re.match('\\((.*)\\)', str(text))
-    return clean.groups()[0]
-
-
-def clean_vendor_trst_lvl_columns(text):
-    clean = re.match('(.*)(\\d)', str(text))
-    return clean.groups()[1]
-
-
-def clean_subcat_column(text):
-    clean = str(text).replace(' ', '')
-    clean = re.match('(Item#.\\d+-)(.+)(-.*)', str(clean))
-    clean = re.match('(.*)\\/(.*)', clean.groups()[1])
-    return clean.groups()[0]
-
-
-def clean_cat_column(text):
-    clean = text.strip()
-    clean = re.match('(\\W*)(.+)(\\s*)', str(clean))
-    return clean.groups()[1]
-
-
-def clean_usd_column(text):
-    return text.replace(',', '')
 
 
 def set_new_popularity(row, sales, trust, total):
@@ -72,7 +45,6 @@ def set_total(row, total):
 
 
 def set_famous_sellers(dataframe):
-    # print(dataframe.head())
     sales = dataframe.sort_values(
         by="sales", axis=0, ascending=False).reset_index()
     trust = sellers.sort_values(
@@ -89,8 +61,9 @@ def set_famous_sellers(dataframe):
     dataframe['popularity'] = dataframe.apply(
         lambda row: set_new_popularity(row, sales, trust, total), axis=1)
     new_list = dataframe.sort_values(by="popularity", ascending=True)
-    # print(new_list.keys())
+
     return new_list
+
 
 def get_cat_subcat_vendors():
     dataframe = list_duplicates
@@ -99,13 +72,14 @@ def get_cat_subcat_vendors():
     result = dataframe.dropna()
     result = result.drop(columns=colums_to_drop, axis=1)
     result['product_id_subcategory'] = result['product_id_subcategory'].apply(
-        clean_subcat_column)
+        cleaner_utility.clean_subcat_column)
 
     result['product_category'] = result['product_category'].apply(
-        clean_cat_column)
+        cleaner_utility.clean_cat_column)
 
     products_sells = result.dropna()
-    products_sells['USD'] = products_sells['USD'].apply(clean_usd_column)
+    products_sells['USD'] = products_sells['USD'].apply(
+        cleaner_utility.clean_usd_column)
     products_sells['USD'] = products_sells['USD'].astype(float)
     products_sells = products_sells.groupby(
         ['product_category', 'product_id_subcategory', 'vendor']).agg({'USD': ['sum']}).reset_index()
@@ -124,16 +98,19 @@ def get_seller_popularity():
     sellers = sellers.dropna(subset=['trust'])
     sellers['member_since'] = pd.to_datetime(
         sellers['member_since'], format='%B %d, %Y')
-    sellers['lvl'] = sellers['lvl'].apply(clean_vendor_trst_lvl_columns)
-    sellers['trust'] = sellers['trust'].apply(clean_vendor_trst_lvl_columns)
-    sellers['sales'] = sellers['sales'].apply(clean_sales_column)
+    sellers['lvl'] = sellers['lvl'].apply(
+        cleaner_utility.clean_vendor_trst_lvl_columns)
+    sellers['trust'] = sellers['trust'].apply(
+        cleaner_utility.clean_vendor_trst_lvl_columns)
+    sellers['sales'] = sellers['sales'].apply(
+        cleaner_utility.clean_sales_column)
     sellers.sales = sellers.sales.astype(int)
     sellers.lvl = sellers.lvl.astype(int)
     sellers.trust = sellers.trust.astype(int)
     sellers.vendor = sellers.vendor.astype(str)
 
-    # print(sellers.head())
     return sellers
+
 
 def main():
     vendors_subcat = get_cat_subcat_vendors()
