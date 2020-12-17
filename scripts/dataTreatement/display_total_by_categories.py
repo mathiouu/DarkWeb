@@ -3,8 +3,8 @@ import matplotlib.pyplot as plt
 import utility
 
 def read(path) :
-    with open(path) as csvfile :
-        spamread = csv.reader(csvfile)
+    with open(path) as csv_file :
+        spamread = csv.reader(csv_file)
 
         title = utility.formatTitle(path) + ' by categories'
         degree_rotation = 90
@@ -13,16 +13,16 @@ def read(path) :
 
         axeX = []
         axeY = []
-        cpt = False
+        is_first_row = False
 
         for row in spamread:
-            if row == [] or cpt == False :
-                cpt = True
+            if row == [] or is_first_row == False :
+                is_first_row = True
                 continue
 
-            usd = round(float(row[1]),2)
+            col_attribute = round(float(row[1]),2)
             axeX.append(row[0])
-            axeY.append(usd)
+            axeY.append(col_attribute)
 
         fig, ax = plt.subplots()
         plt.subplots_adjust(left = subplot_left, bottom = subplot_right)
@@ -35,9 +35,9 @@ def main() :
     total_path = 'data/totalCategories/'
     files = utility.getFile(total_path)
     
-    for treatedFile in files:
-        csvFile = total_path + treatedFile 
-        read(csvFile)
+    for processed_file in files:
+        csv_file = total_path + processed_file
+        read(csv_file)
     plt.show()
 
 main()      

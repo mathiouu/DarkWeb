@@ -29,23 +29,21 @@ def get_quality_normal_way():
             new_csv = dirName + 'average_price.csv'
             with open(new_csv, mode='w') as new_csv:
 
-                fieldnames = [
-                'product_category',
-                'product_id_category', 'count', 'usd', 'average_price'
-                ]
+                fieldnames = ['product_category', 'product_id_category', 'count', 'usd', 'average_price']
                 write = csv.writer(new_csv)
                 write.writerow(fieldnames)
 
-                cpt = False 
-                cpt1 = False
+                is_first_row_sells = False 
+                is_first_row_usd = False
+
                 for row_sells in spamread_sells:
                     row = []
-                    if row_sells == [] or cpt == False :
-                        cpt = True
+                    if row_sells == [] or is_first_row_sells == False :
+                        is_first_row_sells = True
                         continue
                     for row_usd in spamread_usd:
-                        if row_usd == [] or cpt1 == False :
-                            cpt1 = True
+                        if row_usd == [] or is_first_row_usd == False :
+                            is_first_row_usd = True
                             continue
 
                         product_cat = row_sells[0]
@@ -54,7 +52,7 @@ def get_quality_normal_way():
                         product_usd = float(row_usd[2])
                         product_count = float(row_sells[2])
 
-                        product_average_price = product_usd/product_count
+                        product_average_price = product_usd / product_count
 
                         row.append(product_cat)
                         row.append(product_id_subcat)

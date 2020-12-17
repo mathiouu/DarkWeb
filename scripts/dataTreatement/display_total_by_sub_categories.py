@@ -4,11 +4,10 @@ import utility
 
 def read(path) :
 
-    with open(path) as csvfile :
-        spamread = csv.reader(csvfile)
+    with open(path) as csv_file :
+        spamread = csv.reader(csv_file)
 
         title = utility.formatTitle(path) + ' by sub categories'
-        drugs_category = 'Drugs & Chemicals' + title + 'sub categories'
         drugs_category = utility.formatTitle(path) + ' Drugs & Chemicals ' + 'by sub categories'
         degree_rotation = 90
         subplot_left = 0.2
@@ -18,21 +17,20 @@ def read(path) :
         axeY = []
         axeXDrugs = []
         axeYDrugs = []
-
-        cpt = False
+        is_first_row = False
 
         for row in spamread:
-            if row == [] or cpt == False :
-                cpt = True
+            if row == [] or is_first_row == False :
+                is_first_row = True
                 continue
             
-            usd = round(float(row[2]),2)
+            col_attribute = round(float(row[2]),2)
             if row[0] not in drugs_category: 
                 axeX.append(row[0])
-                axeY.append(usd)
+                axeY.append(col_attribute)
             else:
                 axeXDrugs.append(row[1])
-                axeYDrugs.append(usd)
+                axeYDrugs.append(col_attribute)
 
         # All sub categories without Drugs
         fig, ax = plt.subplots()
@@ -54,9 +52,9 @@ def main() :
     total_path = 'data/totalSubCategories/'
     files = utility.getFile(total_path)
     
-    for treatedFile in files:
-        csvFile = total_path + treatedFile 
-        read(csvFile)
+    for processed_file in files:
+        csv_file = total_path + processed_file 
+        read(csv_file)
     plt.show()
 
 main()      

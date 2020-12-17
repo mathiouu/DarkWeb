@@ -1,5 +1,4 @@
 venv
-# data/dataSet/*.csv
 .vscode
 */*/__pycache__
 scripts/__pycache__

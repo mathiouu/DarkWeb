@@ -1,31 +1,35 @@
 import pandas as pd
-import numpy as np
 import re
 import sys
 
 # path_to_datas = "C:/Users/sebas/cours/Master2/Analyse-Reseau/projetDarkWeb/DarkWeb/data"
-path_to_datas = "data/"
+path_to_datas = 'data/'
+path_to_dataSet = path_to_datas + 'dataSet/'
 
-product_list = pd.read_csv(
-    path_to_datas+'dataSet/list_duplicates_drop.csv', delimiter=";")
+list_duplicates_drop = 'list_duplicates_drop.csv'
 
+path_list_duplicates_drop = path_to_dataSet + list_duplicates_drop
+
+product_list = pd.read_csv(path_list_duplicates_drop, delimiter=";")
 
 def clean_sub_cat_column(text):
     clean = str(text).replace(' ', '')
-    clean = re.match('(Item#.\\d+-)(.+)(-.*)', str(clean))
-    clean = re.match('(.*)\\/(.*)', clean.groups()[1])
-    return clean.groups()[0]
-
+    regex = '(Item#.\\d+-)(.+)(-.*)'
+    regex1 = '(.*)\\/(.*)'
+    clean = re.match(regex, str(clean))
+    clean = re.match(regex1, clean.groups()[1])
+    res = clean.groups()[0]
+    return res
 
 def clean_category_column(text):
     clean = text.strip()
-    clean = re.match('(\\W*)(.+)(\\s*)', str(clean))
-    return clean.groups()[1]
-
+    regex = '(\\W*)(.+)(\\s*)'
+    clean = re.match(regex, str(clean))
+    res = clean.groups()[1]
+    return res
 
 def clean_usd_column(text):
     return str(text).replace(',', '')
-
 
 def get_totals_by_categories(clean_product_list):
 
@@ -74,7 +78,6 @@ def get_trending_product(dataframe, category):
     cat = dataframe.groupby(by="product_category")
     index = cat.get_group(category)['USD'].idxmax(axis="columns")
     trending_product = dataframe.loc[index]
-    # print(trending_product)
     return trending_product
 
 
