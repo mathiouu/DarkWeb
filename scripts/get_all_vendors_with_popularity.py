@@ -1,15 +1,16 @@
 import pandas as pd
 import re
-famous_sellers = pd.read_csv(
-    'C:\\Users\\sebas\\cours\\Master2\\Analyse-Reseau\\projetDarkWeb\\DarkWeb\\data\\famousSellers.csv')
-sellers = pd.read_csv(
-    'C:\\Users\\sebas\\cours\\Master2\\Analyse-Reseau\\projetDarkWeb\\DarkWeb\\data\\sellers.csv')
+
+path_to_datas = "C:/Users/sebas/cours/Master2/Analyse-Reseau/projetDarkWeb/DarkWeb/data"
+
+
+famous_sellers = pd.read_csv(path_to_datas+'/famousSellers.csv')
+
 list_duplicates = pd.read_csv(
-    'C:\\Users\\sebas\\cours\\Master2\\Analyse-Reseau\\projetDarkWeb\\DarkWeb\\data\\list_duplicates_drop.csv',
-    delimiter=";")
+    path_to_datas+'/list_duplicates_drop.csv', delimiter=";")
 
 seller_duplicates = pd.read_csv(
-    'C:\\Users\\sebas\\cours\\Master2\\Analyse-Reseau\\projetDarkWeb\\DarkWeb\\data\\seller_duplicates_drop.csv', delimiter=";")
+    path_to_datas+'/seller_duplicates_drop.csv', delimiter=";")
 
 
 def clean_sales_column(text):
@@ -39,7 +40,8 @@ def clean_usd_column(text):
     return text.replace(',', '')
 
 
-def get_cat_subcat_vendors(dataframe):
+def get_cat_subcat_vendors():
+    dataframe = list_duplicates
     colums_to_drop = ['product_url', 'product_title',
                       'product_views_sales_quantityleft', 'vendor_url', 'BTC', 'file', 'crawling_date']
     result = dataframe.dropna()
@@ -58,8 +60,8 @@ def get_cat_subcat_vendors(dataframe):
     return products_sells
 
 
-def get_seller_popularity(dataframe):
-
+def get_seller_popularity():
+    dataframe = seller_duplicates
     colums_to_drop = ['fe_allowed', 'percent_posfb',
                       'fb_1Pos', 'fb_6Pos', 'fb_12Pos', 'fb_1Neu', 'fb_6Neu', 'fb_12Neu',
                       'fb_1Neg', 'fb_6Neg', 'fb_12Neg', 'last', 'fb_left',
@@ -95,8 +97,8 @@ def compute_popularity(dataframe):
 
 
 def main():
-    vendors_subcat = get_cat_subcat_vendors(list_duplicates)
-    vendors_info = get_seller_popularity(seller_duplicates)
+    vendors_subcat = get_cat_subcat_vendors()
+    vendors_info = get_seller_popularity()
     full_info_vendors = vendors_subcat.merge(vendors_info, on='vendor')
     full_info_vendors.columns = ['vendor', 'product_category',
                                  'product_sub_category', 'vendors', 'total_usd', 'sales', 'lvl', 'trust', 'member_since']
@@ -104,8 +106,7 @@ def main():
     full_info_vendors = compute_popularity(
         full_info_vendors.drop(columns=['vendors'], axis=1))
 
-    full_info_vendors.to_csv(
-        'C:\\Users\\sebas\\cours\\Master2\\Analyse-Reseau\\projetDarkWeb\\DarkWeb\\data\\full_info_vendors.csv')
+    full_info_vendors.to_csv(path_to_datas+'/full_info_vendors.csv')
 
 
 main()
