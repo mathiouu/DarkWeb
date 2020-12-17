@@ -9,5 +9,5 @@ def getFile(path) :
 def formatTitle(path) :
     file_name = path.split('/')
     file_name_splitted = file_name[2].split('_')
-    title = file_name_splitted[0] + ' ' + file_name_splitted[1] 
+    title = file_name_splitted[0] + ' ' + file_name_splitted[1]
     return title

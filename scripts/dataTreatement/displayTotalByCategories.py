@@ -3,17 +3,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 import utility
 
-def formatTitle(path) :
-    file_name = path.split('/')
-    file_name_splitted = file_name[2].split('_')
-    title = file_name_splitted[0] + ' ' + file_name_splitted[1] 
-    return title
-
 def read(path) :
     with open(path) as csvfile :
         spamread = csv.reader(csvfile)
 
-        title = utility.formatTitle(path)
+        title = utility.formatTitle(path) + ' by categories'
         degree_rotation = 90
         subplot_left = 0.2
         subplot_right = 0.3
