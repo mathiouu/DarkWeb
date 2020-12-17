@@ -50,7 +50,7 @@ def get_quality_normal_way():
 
                         product_cat = row_sells[0]
                         product_id_subcat = row_sells[1]
-                        
+    
                         product_usd = float(row_usd[2])
                         product_count = float(row_sells[2])
 
@@ -58,8 +58,8 @@ def get_quality_normal_way():
 
                         row.append(product_cat)
                         row.append(product_id_subcat)
-                        row.append(product_usd)
                         row.append(product_count)
+                        row.append(product_usd)
                         row.append(product_average_price)
                         break
                     write.writerow(row)
