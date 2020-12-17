@@ -3,7 +3,6 @@ import re
 
 path_to_datas = "C:/Users/sebas/cours/Master2/Analyse-Reseau/projetDarkWeb/DarkWeb/data"
 
-
 famous_sellers = pd.read_csv(path_to_datas+'/famousSellers.csv')
 
 list_duplicates = pd.read_csv(
@@ -12,16 +11,13 @@ list_duplicates = pd.read_csv(
 seller_duplicates = pd.read_csv(
     path_to_datas+'/seller_duplicates_drop.csv', delimiter=";")
 
-
 def clean_sales_column(text):
     clean = re.match('\\((.*)\\)', str(text))
     return clean.groups()[0]
 
-
 def clean_vendor_trst_lvl_columns(text):
     clean = re.match('(.*)(\\d)', str(text))
     return clean.groups()[1]
-
 
 def clean_subcat_column(text):
     clean = str(text).replace(' ', '')
@@ -29,16 +25,13 @@ def clean_subcat_column(text):
     clean = re.match('(.*)\\/(.*)', clean.groups()[1])
     return clean.groups()[0]
 
-
 def clean_cat_column(text):
     clean = text.strip()
     clean = re.match('(\\W*)(.+)(\\s*)', str(clean))
     return clean.groups()[1]
 
-
 def clean_usd_column(text):
     return text.replace(',', '')
-
 
 def get_cat_subcat_vendors():
     dataframe = list_duplicates
@@ -58,7 +51,6 @@ def get_cat_subcat_vendors():
     products_sells = products_sells.groupby(
         ['product_category', 'product_id_subcategory', 'vendor']).agg({'USD': ['sum']}).reset_index()
     return products_sells
-
 
 def get_seller_popularity():
     dataframe = seller_duplicates
@@ -83,18 +75,15 @@ def get_seller_popularity():
     print(sellers.head())
     return sellers
 
-
 def set_popularity(row):
     # print(row.vendor)
     return
-
 
 def compute_popularity(dataframe):
     dataframe['popularity'] = dataframe.apply(
         lambda row: row.vendor in famous_sellers.values, axis=1)
     dataframe = dataframe.sort_values(by='popularity', ascending=False)
     return dataframe
-
 
 def main():
     vendors_subcat = get_cat_subcat_vendors()
@@ -107,6 +96,5 @@ def main():
         full_info_vendors.drop(columns=['vendors'], axis=1))
 
     full_info_vendors.to_csv(path_to_datas+'/full_info_vendors.csv')
-
 
 main()

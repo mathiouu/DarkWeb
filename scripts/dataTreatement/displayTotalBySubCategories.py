@@ -8,7 +8,8 @@ def read(path) :
         spamread = csv.reader(csvfile)
 
         title = utility.formatTitle(path) + ' by sub categories'
-        drugs_category = 'Drugs & Chemicals sub categories'
+        drugs_category = 'Drugs & Chemicals' + title + 'sub categories'
+        drugs_category = utility.formatTitle(path) + ' Drugs & Chemicals ' + 'by sub categories'
         degree_rotation = 90
         subplot_left = 0.2
         subplot_right = 0.3
